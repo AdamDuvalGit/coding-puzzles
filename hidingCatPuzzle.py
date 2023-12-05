@@ -12,7 +12,7 @@ sequence_traditional = (2, 3, 4, 4, 3, 2, 2)
 sequence_bayesian = (2, 2, 3, 4, 4, 3, 2)
 
 # Create dataframes to store the results after each game
-result_traditional = pd.DataFrame(columns=["ft1", "ft2", "ft3", "ft4", "ft5", "ft6", ""ft7])
+result_traditional = pd.DataFrame(columns=["ft1", "ft2", "ft3", "ft4", "ft5", "ft6", "ft7"])
 result_bayesian = pd.DataFrame(columns=["fb1", "fb2", "fb3", "fb4", "fb5", "fb6", "fb7"])
 
 # Create dataframes to store the cumulative probabilities atfer each game
@@ -24,9 +24,9 @@ cum_result_traditional = pd.DataFrame(columns=["rt1", "rt2", "rt3", "rt4", "rt5"
 cum_result_bayesian = pd.DataFrame(columns=["rb1", "rb2", "rb3", "rb4", "rb5", "rb6", "rb7"])
 
 # Set the number of simulations
-s = -1
-while s < 999:
-    s += 1
+s = 0
+while s < 1000:
+
     # Hide the cat in one of the five boxes
     cat_in_box = random.randint(1, 5)
 
@@ -58,17 +58,26 @@ while s < 999:
     result_traditional.loc[s] = open_traditional
     result_bayesian.loc[s] = open_bayesian
 
-        
     # Append the cumulative results
-    cum_result_traditional.loc[s] = np.cumsum(result_traditional)
-    cum_result_bayesian.loc[s] = np.cumsum(result_bayesian)
-    
-    # Append the cumulative distributions
-    cdf_traditional.loc[s] = np.round_((cum_result_traditional.loc[s] / sum(cum_result_traditional.loc[s])), decimals = 2).tolist()  
-    cdf_bayesian.loc[s] = np.round_((cum_result_bayesian.loc[s] / sum(cum_result_bayesian.loc[s])), decimals = 2).tolist()
+    cum_result_traditional.loc[s] = result_traditional.sum().tolist()
+    cum_result_bayesian.loc[s] = result_bayesian.sum().tolist()
 
+    # Append the distribution for each game
+    cdf_traditional.loc[s] = np.round_((cum_result_traditional.loc[s] / sum(cum_result_traditional.loc[s])), decimals=2).tolist()  
+    cdf_bayesian.loc[s] = np.round_((cum_result_bayesian.loc[s] / sum(cum_result_bayesian.loc[s])), decimals=2).tolist()
+    
+    # Increment the counter
+    s += 1
+    # End of the loop
+
+# Create cumulative distributions for each game
+cdf_traditional = cdf_traditional.cumsum(axis=1).round(2)
+cdf_bayesian = cdf_bayesian.cumsum(axis=1).round(2)
+    
 # Write the dataframes to csv files
-cum_result_traditional.to_csv("cum_result_traditional.csv")
-cdf_traditional.to_csv("cdf_traditional.csv")
-cum_result_bayesian.to_csv("cum_result_bayesian.csv")
-cdf_bayesian.to_csv("cdf_bayesian.csv")
+result_traditional.to_csv("result_traditional.csv", index=False)
+cum_result_traditional.to_csv("cum_result_traditional.csv", index=False)
+cdf_traditional.to_csv("cdf_traditional.csv", index=False)
+result_bayesian.to_csv("result_bayesian.csv", index=False)
+cum_result_bayesian.to_csv("cum_result_bayesian.csv", index=False)
+cdf_bayesian.to_csv("cdf_bayesian.csv", index=False)
