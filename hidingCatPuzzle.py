@@ -1,5 +1,3 @@
-<h1>"Find the cat" simulation</h1>
-
 ''' 
 Python code to play the Find the Cat Game (please see the README.TXT for details)
 '''
