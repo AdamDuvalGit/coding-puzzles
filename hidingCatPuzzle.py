@@ -11,10 +11,6 @@ import pandas as pd
 sequence_traditional = (2, 3, 4, 4, 3, 2, 2)
 sequence_bayesian = (2, 2, 3, 4, 4, 3, 2)
 
-# Create lists to store the results for each game
-open_traditional = [0, 0, 0, 0, 0, 0, 0]
-open_bayesian = [0, 0, 0, 0, 0, 0, 0]
-
 # Create dataframes to store the results after each game
 result_traditional = pd.DataFrame(columns=["ft1", "ft2", "ft3", "ft4", "ft5", "ft6", ""ft7])
 result_bayesian = pd.DataFrame(columns=["fb1", "fb2", "fb3", "fb4", "fb5", "fb6", "fb7"])
@@ -33,6 +29,10 @@ while s < 999:
     s += 1
     # Hide the cat in one of the five boxes
     cat_in_box = random.randint(1, 5)
+
+    # Create and reset the lists to store the results for each game
+    open_traditional = [0, 0, 0, 0, 0, 0, 0]
+    open_bayesian = [0, 0, 0, 0, 0, 0, 0]
 
     # Reset the game results
     traditional_found = False
@@ -57,14 +57,15 @@ while s < 999:
     # Append the cumulative results
     result_traditional.loc[s] = open_traditional
     result_bayesian.loc[s] = open_bayesian
+
+        
+    # Append the cumulative results
+    cum_result_traditional.loc[s] = np.cumsum(result_traditional)
+    cum_result_bayesian.loc[s] = np.cumsum(result_bayesian)
     
     # Append the cumulative distributions
-    cdf_traditional.loc[s] = np.round_((np.cumsum(result_traditional) / sum(result_traditional)), decimals = 4).tolist()  
-    cdf_bayesian.loc[s] = np.round_((np.cumsum(result_bayesian) / sum(result_bayesian)), decimals = 4).tolist()
-    
-    # Append the cumulative results
-    cum_result_traditional.loc[s] = result_traditional
-    cum_result_bayesian.loc[s] = result_bayesian
+    cdf_traditional.loc[s] = np.round_((cum_result_traditional.loc[s] / sum(cum_result_traditional.loc[s])), decimals = 2).tolist()  
+    cdf_bayesian.loc[s] = np.round_((cum_result_bayesian.loc[s] / sum(cum_result_bayesian.loc[s])), decimals = 2).tolist()
 
 # Write the dataframes to csv files
 cum_result_traditional.to_csv("cum_result_traditional.csv")
